@@ -1,0 +1,1 @@
+i´m only testing git and i can say that i really hate the phrase: permission denied (publickey); fatal: the remote end hung up unexpectedly
