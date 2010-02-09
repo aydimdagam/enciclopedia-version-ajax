@@ -1,0 +1,45 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Enciclopedia de criaturas</title>
+<link rel="stylesheet" href="auxiliar/enciclopedia.css" type="text/css">
+<script type="text/javascript" src="auxiliar/swfobject.js"></script>
+<script type="text/javascript" src="auxiliar/ajax.js"></script>
+<script type="text/javascript" src="auxiliar/autocompletar.js"></script>
+</head>
+
+<body>
+<div id="contenedor">
+    <div id="izda">
+    	<div id="bso">Este será el texto sustituido</div>
+        <form>
+            <label for="familia">Selecciona el Tipo de Criaturas:</label>
+            <select id="familia" name="familia">
+            <option>Cargando...</option>
+            </select>
+            <br><br>
+            <label for="criatura">Selecciona la Criatura:</label>
+            <select id="criatura" name="criatura">
+            <option>- Deshabilitado -</option>
+            </select> 
+            <br><br>
+            <label for="buscar">Buscar la Criatura:</label>
+            <input type="text" id="buscar" name="bucar" size="20">
+            <input type="text" id="oculto" name="oculto" style="display:none;">
+        </form>
+		<div id="diosguarro"></div><!-- para que inserte las sugerencias antes del resto -->
+		<div id="aleatoria">Criatura aleatoria</div>            
+	</div>
+    
+    <div id="dcha">
+  		<div id="imagen"></div>
+        <div id="nombre"></div>
+        <div id="restriccion"></div>
+        <div id="intro"></div>
+        <div id="descripcion"></div>
+        <div id="notas"></div>
+    </div>
+</div>
+</body>
+</html>

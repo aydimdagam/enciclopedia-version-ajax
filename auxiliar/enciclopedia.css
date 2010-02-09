@@ -1,0 +1,133 @@
+@charset "utf-8";
+/* CSS Document */
+body
+{
+	font-weight:bold
+}
+select
+{
+	margin-top:15px;
+}
+#contenedor
+{
+	margin: 0em auto 0em auto;
+	overflow:hidden;
+	min-width: 920px;
+	xborder: 2px solid black;
+}
+#sugerencias 
+{
+	width:200px;
+	border:1px solid black;
+	display:none;
+	margin-left: 83px;
+}
+#sugerencias ul 
+{
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	font-size:.85em;
+}
+#sugerencias ul li 
+{
+	padding: .2em;
+	border-bottom: 1px solid silver;
+}
+.seleccionado
+{
+	font-weight:bold;
+	background-color: red;
+}
+div
+{
+	margin:0em; padding:0em;
+	xborder:2px solid green
+}
+#nombre
+{
+	margin-top:15px;
+	font-size:40px;
+	text-align:center;
+	text-decoration:underline;
+}
+#intro
+{
+	margin-top:10px;
+	padding: 0px 10px 0px 0px;
+	font-style:italic;
+	xborder: 2px solid black
+}
+#descripcion, #notas
+{
+	margin-top:1.5em;
+	text-align:justify;
+}
+#imagen
+{
+	-webkit-border-radius: 20px;
+	-moz-border-radius: 20px;
+	-ms-border-radius: 20px;
+	border: 2px solid black;
+	margin: 10px 0px 10px 30px;
+	padding: 10px;
+	width:320px; height: 320px;
+	float:right
+}
+#izda
+{ 
+	float:left;
+	width:25%;
+	xborder: 2px solid green;
+}
+#dcha
+{
+	float:right;
+	width: 60%;
+	margin: 20px;
+	padding:20px;
+	-webkit-border-radius: 30px;
+	-moz-border-radius: 30px;
+	-ms-border-radius: 30px;
+	xborder: 2px solid black
+}
+#aleatoria
+{
+	margin-top: 40px;
+	margin-right: 1em;
+	text-decoration:underline;
+	text-align:right;
+	width:auto; height:auto;
+}
+#bso
+{
+	margin: 0px auto 0px auto;
+	text-align:center;
+	width:330px; height:360px;
+	xborder:2px solid black
+}
+#buscar
+{
+	margin-top:20px;
+}
+
+ul
+{
+	list-style:none;
+}
+#restriccion ul li {
+	margin: 20px 0px 10px 10px;
+	width: 15px; height: 15px;	
+	float:left;
+	xborder: 1px solid black;
+}
+
+h1, form
+{
+	xmargin:0em 2em 2em 0em;
+	text-align:right;
+}
+label
+{
+	margin-right:1em
+}

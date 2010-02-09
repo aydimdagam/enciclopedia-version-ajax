@@ -1,0 +1,9 @@
+DOCUMENTACION/
+.DS_*
+._*
+._.*
+_notes/
+auxiliar/*.fla
+*.db
+imagenes/
+*.mp3
