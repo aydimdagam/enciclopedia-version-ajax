@@ -1,49 +1,148 @@
-@charset "utf-8";
-/* CSS Document */
-body
+/* @override http://localhost/enciclopedia-version-ajax/auxiliar/enciclopedia.css */
+
+/* CSS BASE */
+/* CSS BASE */
+BODY
 {
-	font-weight:bold
+	font-weight:bold;
+	background: #61300E;
+}
+a
+{
+	text-decoration: none;
+}
+a:link, a:visited
+{
+	color: #FEBF91;
+}
+
+a:hover
+{
+	color: #FEDFC8;
+}
+h1{
+	font-size: 50px;
+	color:   #FEBF91;
+	text-align: center;
+	margin-bottom: 60px;
+}
+form
+{
+	text-align: right;
 }
 select
 {
-	margin-top:15px;
+	width: 60%;
+	height: 30px;
+	font-size: 14px;
+	margin-top: 15px;
+	padding: 5px;
+	border: 2px solid #FEBF91;
+	opacity: 0.6;
+	filter: alpha(opacity=60);
 }
-#contenedor
+input
 {
-	margin: 0em auto 0em auto;
-	overflow:hidden;
-	min-width: 920px;
-	xborder: 2px solid black;
+	width: 40%;
+	height: 15px;
+	font-size: 14px;
+	margin: 15px 0px 0px 15px;
+	padding: 5px;
+	border: 2px solid #FEBF91;
+	opacity: 0.6;
+	filter: alpha(opacity=60);
 }
-#sugerencias 
+label
 {
-	width:200px;
-	border:1px solid black;
-	display:none;
-	margin-left: 83px;
+	color: #FEBF91;
+	font-size: 18px;
 }
-#sugerencias ul 
+ol, ul
 {
-	list-style: none;
-	margin: 0;
-	padding: 0;
-	font-size:.85em;
-}
-#sugerencias ul li 
-{
-	padding: .2em;
-	border-bottom: 1px solid silver;
-}
-.seleccionado
-{
-	font-weight:bold;
-	background-color: red;
+	list-style:none;
 }
 div
 {
-	margin:0em; padding:0em;
-	xborder:2px solid green
+	margin:0em; padding:0em;	
+	overflow: hidden;
+	xborder:2px solid green;	
 }
+
+/* CSS DIVS BASE */
+/* CSS DIVS BASE */
+#contenedor
+{
+}
+
+#izda
+{ 
+	float:left;
+	width: 350px;
+	min-width: 330px;
+	margin: 20px;
+}
+
+#dcha
+{
+	width: 60%;
+	margin: 20px auto 0px auto;
+	padding:20px;
+	background: #FEDFC8;
+	height: 800px;
+	-webkit-border-radius: 30px;
+	-moz-border-radius: 30px;
+	-ms-border-radius: 30px;
+}
+
+/* CSS DIVS IZDA */
+/* CSS DIVS IZDA */
+#bso
+{
+	width:260px; height:330px;
+	float: right;
+}
+
+#buscar
+{
+	margin-top:20px;
+}
+	#sugerencias 
+	{
+		width:200px;
+		border:1px solid white;
+		display:none;
+		margin-left: 83px;
+	}
+	#sugerencias ul 
+	{
+		margin: 0;
+		padding: 0;
+	}
+	#sugerencias ul li 
+	{
+		padding: .2em;
+		border-bottom: 1px solid white;
+	}
+	.seleccionado
+	{
+		font-weight:bold;
+		background-color: red;
+	}
+
+#aleatoria
+{
+	margin: 40px 10px 20px 0px;
+	text-decoration:underline;
+	text-align:right;
+	color: #FEBF91;
+	font-size: 20px;
+}
+/* CSS DIVS IZDA */
+/* CSS DIVS IZDA */
+
+
+/* CSS DIVS DCHA */
+/* CSS DIVS DCHA */
 #nombre
 {
 	margin-top:15px;
@@ -51,83 +150,59 @@ div
 	text-align:center;
 	text-decoration:underline;
 }
-#intro
-{
-	margin-top:10px;
-	padding: 0px 10px 0px 0px;
-	font-style:italic;
-	xborder: 2px solid black
+
+#restriccion{
+	min-width: 300px;
+	overflow: hidden;
 }
-#descripcion, #notas
-{
-	margin-top:1.5em;
-	text-align:justify;
-}
+	#restriccion ul li {
+		margin: 20px 0px 10px 10px;
+		width: 15px; height: 15px;	
+		float:left;
+	}
+
 #imagen
 {
 	-webkit-border-radius: 20px;
 	-moz-border-radius: 20px;
 	-ms-border-radius: 20px;
-	border: 2px solid black;
-	margin: 10px 0px 10px 30px;
-	padding: 10px;
-	width:320px; height: 320px;
-	float:right
-}
-#izda
-{ 
-	float:left;
-	width:25%;
-	xborder: 2px solid green;
-}
-#dcha
-{
+	margin: 0px 0px 20px 20px;
+	padding: 20px;
+	min-width: 300px;
+	min-height: 300px;
+	width:300px; height: 300px;
 	float:right;
-	width: 60%;
-	margin: 20px;
-	padding:20px;
-	-webkit-border-radius: 30px;
-	-moz-border-radius: 30px;
-	-ms-border-radius: 30px;
-	xborder: 2px solid black
 }
-#aleatoria
+	
+#intro
 {
-	margin-top: 40px;
-	margin-right: 1em;
-	text-decoration:underline;
-	text-align:right;
-	width:auto; height:auto;
-}
-#bso
-{
-	margin: 0px auto 0px auto;
-	text-align:center;
-	width:330px; height:360px;
-	xborder:2px solid black
-}
-#buscar
-{
-	margin-top:20px;
+	margin-top:10px;
+	padding: 0px 10px 0px 0px;
+	min-width:  150px; min-height: 150px;
+	font-style:italic;
+	overflow: visible;
 }
 
-ul
+#descripcion, #notas
 {
-	list-style:none;
-}
-#restriccion ul li {
-	margin: 20px 0px 10px 10px;
-	width: 15px; height: 15px;	
-	float:left;
-	xborder: 1px solid black;
+	margin-top:1.5em;
+	text-align:justify;
+	overflow: visible;
 }
 
-h1, form
-{
-	xmargin:0em 2em 2em 0em;
-	text-align:right;
+#pie{
+	width: 80%;
+	margin: 10px auto 20px auto;
+	text-align: center;
 }
-label
+#pie ul{
+	overflow: hidden;
+}
+#pie ul li
 {
-	margin-right:1em
+	display: inline;
+	margin-right: 20px;
+}
+#pie div{
+	
 }

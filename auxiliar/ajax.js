@@ -20,7 +20,7 @@ function muestraFamilias() {
 		var oJSON=peticion.responseText;
 		var familias=JSON.parse(oJSON);
 	  
-      lista.options[0] = new Option("- selecciona un Tipo de criaturas -");
+      lista.options[0] = new Option("- Tipo de criaturas -");
       var i=1;
       for(var codigo in familias) {
         lista.options[i] = new Option(familias[codigo], codigo);
@@ -57,7 +57,7 @@ function muestraCriaturas() {
 		var criaturas =JSON.parse(oJSON);
 		
 	  lista.options.length = 0;
-      lista.options[0] = new Option("- selecciona una criatura -");
+      lista.options[0] = new Option("- Criatura -");
       var i=1;
       for(var codigo in criaturas) {
         lista.options[i] = new Option(criaturas[codigo], codigo);
@@ -115,15 +115,19 @@ function getElementsByClassName(oElm, strTagName, strClassName){
 }
 
 //
-//función para sustituir caracter extraños
-//para utilizar el nombre de la criatura directamente desde el campo de la base de datos
-//pero hay que cambiar los caracteres extraños (espacios, ñ, acentos, etc) para que coincida con 
-//el nombre de la imagen (ya que las imágenes en Internet no pueden tener caracteres extraños)
 //
-//primero creamos el array de pares valor a sustituir por valor de sustitución ('á' : 'a') pero codificados en utf-8 (es decir, que hay que poner su valor Unicode)
-CharsTranslation = {'\u00e1' : 'a','\u00e9' : 'e','\u00ed' : 'i', '\u00f3' : 'o', '\u00fa' : 'u', '\u00c1' : 'A', '\u00c9' : 'E', '\u00cd' : 'I', '\u00d3' : 'O', '\u00da' : 'U', '\u00f1' : 'n', '\u00d1' : 'N', '\u00E4' : 'a',  '\u00EB' : 'e', '\u00EF' : 'i', '\u00F6' : 'o', '\u00FC' : 'u', '\u00EE' : 'i', '\u00FB' : 'u', ' ': '-'};
-
-
+//SUSTITUCIÓN DE CARACTERES EXTRAÑOS
+//para poder reutilizar el nombre de la criatura sacado del campo análogo de la base de datos para que coincida con el nombre 
+//de la imagen hay que cambiar los caracteres extraños (espacios, ñ, acentos, etc), ya que las imágenes en Internet 
+//no pueden tener caracteres extraños
+//
+//primero creamos el array de pares valor a sustituir por valor de sustitución ('á' : 'a') pero codificados en utf-8 
+//(es decir, que hay que poner su valor Unicode)
+var CharsTranslation = {'\u00e1' : 'a','\u00e9' : 'e','\u00ed' : 'i', '\u00f3' : 'o', '\u00fa' : 'u', '\u00c1' : 'A', 
+		'\u00c9' : 'E', '\u00cd' : 'I', '\u00d3' : 'O', '\u00da' : 'U', '\u00f1' : 'n', '\u00d1' : 'N', '\u00E4' : 'a',  
+		'\u00EB' : 'e', '\u00EF' : 'i', '\u00F6' : 'o', '\u00FC' : 'u', '\u00EE' : 'i', '\u00FB' : 'u', ' ': '-'};
+//
+//función para sustituir caracter extraños en una cadena
 function strtr(str, list)
 {
   for(var c in list) {
@@ -132,7 +136,44 @@ function strtr(str, list)
  //
   return str;
 }
- 
+
+//
+//función para aplicar colores (estilos CSS) a cada criatura
+//se le pasa la gama de colroes de cada familia de criaturas (extraido de la BD)
+function aplicarColoresCriatura(color0, color1, color2)
+{
+	document.body.style.background=color1;							//fondo: color base
+	document.getElementById("dcha").style.background=color2;		//izquierda: color claro
+	document.getElementById("dcha").style.color=color1;				//derecha: color base	
+	document.getElementById("imagen").style.background=color0;		//imagen: color oscuro
+	document.getElementById("imagen").style.opacity=0.7;			//imagen: opacidad
+	document.getElementById("nombre").style.color=color1;			//el nombre: color base	
+	document.getElementById("izda").style.color=color2;				//izquierda: color claro
+	document.getElementById("aleatoria").style.color=color2;		//aleatoria: color claro
+	document.getElementById("intro").style.color=color0;			//intro: color oscuro
+	//
+	var enlaces=document.getElementsByTagName("a");
+	for(var i=0;i<enlaces.length;i++)
+	{
+		enlaces[i].style.textDecoration="none";
+		enlaces[i].style.color=color2;
+		//enlaces[i].style.color=color0;		//pendiente del rollover
+	}
+	//
+	var etiquetas=document.getElementsByTagName("label");
+	for(var i=0;i<etiquetas.length;i++)
+	{
+		etiquetas[i].style.color=color2;
+	}
+	//
+	var listas=document.getElementsByTagName("select");
+	for(var i=0;i<listas.length;i++)
+	{
+		
+		listas[i].style.borderColor=color2;
+	}
+	document.getElementsByTagName("h1")[0].style.color=color2;
+}
  
 //mostramos los datos de la criatura elegida
 function muestraDatosCriatura()
@@ -162,29 +203,17 @@ function muestraDatosCriatura()
 						break;					
 					case "color0":
 					case "color1":
+						break;						
 					case "color2":
-						break;
-					case "color3":					
-						//color0: gama-color más oscuro de la gama (Hex); color1: nombre color base; 
-						//color2: color intermedio de la gama (Hex), color3: color más claro de la gama
-						document.body.style.background=datosCriatura.color1;
-						document.getElementById("dcha").style.background="#"+datosCriatura.color2;
-						document.getElementById("imagen").style.background="#"+datosCriatura.color0;
-						document.getElementById("imagen").style.opacity=0.7;
-						document.body.style.color="#"+datosCriatura.color1;
-						document.getElementById("nombre").style.color=datosCriatura.color1;		
-						document.getElementById("izda").style.color="#"+datosCriatura.color2;
-						document.getElementById("intro").style.color="#"+datosCriatura.color0;
-						//
+						//aplicamos los colores (mediante estilos CSS)
+						aplicarColoresCriatura("#"+datosCriatura.color0, datosCriatura.color1, "#"+datosCriatura.color2);
 						//
 						var flashvars = {color: "0x"+datosCriatura.color2};
 						var params = {menu: "false", wmode: "transparent" };
-						swfobject.embedSWF("auxiliar/bso.swf", "bso", "360", "330", 
-									   "9.0.0","", flashvars, params);
+						swfobject.embedSWF("auxiliar/bso.swf", "bso", "360", "330", "9.0.0","", flashvars, params);
 						break;
 					case "restriccion":
 						var valorRestriccion=parseInt(datosCriatura[nombre]);
-						//if (datosCriatura[nombre]==null)	valorRestriccion=4;
 						var lista="<ul>\n";
 						for(var j=0; j<10; j++) 
 						{
@@ -222,7 +251,6 @@ function muestraDatosCriatura()
 		}
 	}
 }
-
 //
 //
 //cargamos los datos de la Criatura aleatoria elegida desde el enlace
@@ -235,7 +263,7 @@ function cargarCriaturaAleatoria() {
 	if (peticion) 
 	{
 	  peticion.onreadystatechange = muestraDatosCriatura;
-	  peticion.open("POST", "auxiliar/criaturaAleatoria.php?nocache=" + Math.random(), true);
+	  peticion.open("POST", "auxiliar/cargaDatosCriatura.php?nocache=" + Math.random(), true);
 	  peticion.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 	  peticion.send("numAleatorio=" + numAleatorio);
 	}
@@ -276,6 +304,9 @@ window.onload = function()
 	enlaceCriaturaAleatoria.onclick=cargarCriaturaAleatoria;
 	//
 	//
+	var flashvars = {color: "0xFEBF91"};
 	var params = {menu: "false", wmode: "transparent"};
-	swfobject.embedSWF("auxiliar/bso.swf", "bso", "360", "330", "9.0.0","", params);
+	swfobject.embedSWF("auxiliar/bso.swf", "bso", "360", "330", "9.0.0","", flashvars, params);
+	//
+	//document.getElementById('dcha').style.minHeight="580px";
 }

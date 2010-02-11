@@ -25,7 +25,7 @@ Array.prototype.formateaLista = function() {
 function autocompleta() {
   var elEvento = arguments[0] || window.event;
   var tecla = elEvento.keyCode;
-
+  //
   if(tecla == 40) { // Flecha Abajo
 	if(elementoSeleccionado+1 < sugerencias.length) {
 	  elementoSeleccionado++;
@@ -54,7 +54,7 @@ function autocompleta() {
 	if(tecla == 27) {
 	  borraLista();
 	  return;
-	}	
+	}
 	
 	if(cacheSugerencias[texto] == null) {
 	  peticion = inicializa_xhr();
@@ -100,6 +100,7 @@ function seleccionaElemento() {
 	document.getElementById("buscar").value = sugerencias[elementoSeleccionado];
 	borraLista();
 	//
+	//finalmente llamamos a cargaDatosCriaturaBuscar() que est‡ en el archivo ajax.js
 	cargaDatosCriaturaBuscar();
   }
 }
@@ -115,3 +116,6 @@ function borraLista() {
   document.getElementById("sugerencias").innerHTML = "";
   document.getElementById("sugerencias").style.display = "none";
 }
+
+//N—tese que he tenido que a–adir  autocomplete="off" al formulario (form) para que nos despliegue el propio autocompletado 
+//que algunos navegadores tienen configurados por defecto (aunque tambiŽn puede desactivarlo el propio usuario; al menos en safari)

@@ -1,20 +1,21 @@
 <?php
-//Conectamos a la base de datos
-include("conexion.php");
+//
+if (isset($_POST["numAleatorio"]))
+{
+	include("consultaAleatoria.php");
+	$consultaCriatura=consultaAleatoria();
+}
+else if (isset($_POST["nombreCriatura"]))
+{
+	include("consultaCriatura.php");
+	$consultaCriatura=consultaCriatura();
+}
+//
+//llamamos a la funciónd e conexión a la BD pues aún nos queda realizar otra conexión
+//(la conexión está incluida en uno de los dos ficheros .php anteriorees que se cargan)
 $conexion=db_connect();
-
-//recuperamos el nombre de la criatura a consultar desde el formulario
-$nombreCriatura=$_POST["nombreCriatura"];
-
-//quitamos los caracteres extraños del nombre de la criatura (si no falla la consulta)
-//a parte de sustituir los caracteres extraños debemos decodificar la cadena de UTF-8 a ISO
-//(no sé por qué ya que la BD está en UTF-8)
-$putosAnglosajones=strtr(utf8_decode($nombreCriatura),"áéíóúÁÉÍÓÚäëöüÄËÖÜîûÎÛñÑ","aeiouAEIOUaeouAEOUiuIUnN");	//sin acentos hace la consulta igual...
-
-//realizamos la consulta para conseguir los datos de la CRIATURA
-$consultaDatosCriatura=mysql_query("SELECT nombre, intro, descripcion, notas, id_familia, restriccion FROM criaturas WHERE nombre='".$putosAnglosajones."'", $conexion);
-
-$resultadoDatosCriatura=mysql_fetch_array($consultaDatosCriatura);
+//
+$resultadoDatosCriatura=mysql_fetch_array($consultaCriatura);
 
 //recogemos el campo id_familia que lo necesitaremos para otra consulta
 $id_familia=$resultadoDatosCriatura["id_familia"];
