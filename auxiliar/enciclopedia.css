@@ -33,7 +33,7 @@ form
 select
 {
 	width: 60%;
-	height: 30px;
+	height: 32px;
 	font-size: 14px;
 	margin-top: 15px;
 	padding: 5px;
@@ -88,7 +88,7 @@ div
 	margin: 20px auto 0px auto;
 	padding:20px;
 	background: #FEDFC8;
-	height: 800px;
+	min-height: 800px;
 	-webkit-border-radius: 30px;
 	-moz-border-radius: 30px;
 	-ms-border-radius: 30px;

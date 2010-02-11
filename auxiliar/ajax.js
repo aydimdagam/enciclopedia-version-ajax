@@ -122,10 +122,12 @@ function getElementsByClassName(oElm, strTagName, strClassName){
 //no pueden tener caracteres extraños
 //
 //primero creamos el array de pares valor a sustituir por valor de sustitución ('á' : 'a') pero codificados en utf-8 
-//(es decir, que hay que poner su valor Unicode)
-var CharsTranslation = {'\u00e1' : 'a','\u00e9' : 'e','\u00ed' : 'i', '\u00f3' : 'o', '\u00fa' : 'u', '\u00c1' : 'A', 
-		'\u00c9' : 'E', '\u00cd' : 'I', '\u00d3' : 'O', '\u00da' : 'U', '\u00f1' : 'n', '\u00d1' : 'N', '\u00E4' : 'a',  
-		'\u00EB' : 'e', '\u00EF' : 'i', '\u00F6' : 'o', '\u00FC' : 'u', '\u00EE' : 'i', '\u00FB' : 'u', ' ': '-'};
+//(es decir, que hay que poner su valor Unicode): á-Á-ä-Ä-î
+var CharsTranslation = {'\u00e1' : 'a','\u00e9' : 'e','\u00ed' : 'i', '\u00f3' : 'o', '\u00fa' : 'u', 
+						'\u00c1' : 'A', '\u00c9' : 'E', '\u00cd' : 'I', '\u00d3' : 'O', '\u00da' : 'U', 
+						'\u00E4' : 'a', '\u00EB' : 'e', '\u00EF' : 'i', '\u00F6' : 'o', '\u00FC' : 'u',
+						'\u00C4' : 'A', '\u00CB' : 'E', '\u00CF' : 'I', '\u00D6' : 'O', '\u00CC' : 'U',
+						'\u00EE' : 'i', '\u00FB' : 'u', '\u00CE' : 'I', '\u00DB' : 'U', '\u00f1' : 'n', '\u00d1' : 'N', ' ': '-'};
 //
 //función para sustituir caracter extraños en una cadena
 function strtr(str, list)
@@ -172,6 +174,9 @@ function aplicarColoresCriatura(color0, color1, color2)
 		
 		listas[i].style.borderColor=color2;
 	}
+	//
+	document.getElementsByTagName("input")[0].style.borderColor=color2;
+	//color para el título principal de la página: Enciclopedia de Criaturas
 	document.getElementsByTagName("h1")[0].style.color=color2;
 }
  
@@ -193,7 +198,7 @@ function muestraDatosCriatura()
 				{
 					case "nombre":						
 						var imagen=strtr(datosCriatura[nombre], CharsTranslation);						
-						document.getElementById("imagen").innerHTML="<img width=\"300\" height=\"300\" border=\"0\" src=\"imagenes/"+imagen.toLowerCase()+".jpg\" />";
+						document.getElementById("imagen").innerHTML="<a href=\"imagenes/"+imagen.toLowerCase()+".jpg\" target=\"_blank\"><img width=\"300\" height=\"300\" border=\"0\" src=\"imagenes/"+imagen.toLowerCase()+".jpg\" /></a>";
 						document.getElementById(nombre).innerHTML=datosCriatura[nombre];
 						break
 					case "intro":

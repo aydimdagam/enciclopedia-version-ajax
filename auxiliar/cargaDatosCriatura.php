@@ -19,7 +19,6 @@ $resultadoDatosCriatura=mysql_fetch_array($consultaCriatura);
 
 //recogemos el campo id_familia que lo necesitaremos para otra consulta
 $id_familia=$resultadoDatosCriatura["id_familia"];
-
 //consultamos la gama de colores de la familia de criaturas gracias al campo anterior
 $consultaColoresCriatura=mysql_query("SELECT distinct familias.gama_colores FROM familias INNER JOIN criaturas ON familias.id_familia=".$id_familia."", $conexion);
 
