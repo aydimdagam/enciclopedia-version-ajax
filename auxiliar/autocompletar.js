@@ -42,7 +42,7 @@ function autocompleta() {
 	seleccionaElemento();
   }
   else {
-	var texto = document.getElementById("buscar").value;
+	var texto = $("buscar").value;
 	
 	// Si es la tecla de borrado y el texto es vac√≠o, ocultar la lista
 	if(tecla == 8 && texto == "") {
@@ -55,39 +55,40 @@ function autocompleta() {
 	  borraLista();
 	  return;
 	}
-	
-	if(cacheSugerencias[texto] == null) {
-	  peticion = inicializa_xhr();
-	  
-	  peticion.onreadystatechange = function() { 
-		if(peticion.readyState == 4) {
-		  if(peticion.status == 200) {
-			sugerencias = eval('('+peticion.responseText+')');
-			if(sugerencias.length == 0) {
-			  sinResultados();
-			}
-			else {
-			  cacheSugerencias[texto] = sugerencias;
-			  actualizaSugerencias();
-			}
-		  }
-		}
-	  };
-	  
-	  peticion.open('POST', 'auxiliar/autocompletaCriaturas.php?nocache='+Math.random(), true);
-	  peticion.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-	  peticion.send('buscar='+encodeURIComponent(texto));
+	//
+	if(cacheSugerencias[texto] == null)
+	{
+		new Ajax.Request("auxiliar/autocompletaCriaturas.php?nocache=" + Math.random(), {	//usamos Prototype para llamar a XMLHttpRequest
+			method: 'POST',
+			requestHeaders:{'Content-Type' : 'application/x-www-form-urlencoded'},
+			parameters: 'buscar='+encodeURIComponent(texto),
+			onSuccess: cargaSugerencias
+			});
 	}
-	else {
-	  sugerencias = cacheSugerencias[texto];
+	else {	  
 	  actualizaSugerencias();
+	  sugerencias = cacheSugerencias[texto];
 	}
   }
 }
 
+function cargaSugerencias(peticion)
+{
+	if(peticion.readyState == 4) {
+	  if(peticion.status == 200) {
+		sugerencias = eval('('+peticion.responseText+')');
+		if(sugerencias.length == 0)	sinResultados();
+		else{		  
+		  actualizaSugerencias();
+		  cacheSugerencias[texto] = sugerencias;
+		}
+	  }
+	}	
+}
+
 function sinResultados() {
-  document.getElementById("sugerencias").innerHTML = "No existen criaturas que empiecen con ese texto";
-  document.getElementById("sugerencias").style.display = "block";
+  $("sugerencias").innerHTML = "No existen criaturas que empiecen con ese texto";
+  $("sugerencias").style.display = "block";
 }
 
 function actualizaSugerencias() {
@@ -97,7 +98,7 @@ function actualizaSugerencias() {
 
 function seleccionaElemento() {
   if(sugerencias[elementoSeleccionado]) {
-	document.getElementById("buscar").value = sugerencias[elementoSeleccionado];
+	criaturaSeleccionada = sugerencias[elementoSeleccionado];
 	borraLista();
 	//
 	//finalmente llamamos a cargaDatosCriaturaBuscar() que está en el archivo ajax.js
@@ -106,15 +107,14 @@ function seleccionaElemento() {
 }
 
 function muestraSugerencias() {
-  var zonaSugerencias = document.getElementById("sugerencias");
-  
+  var zonaSugerencias = $("sugerencias");
   zonaSugerencias.innerHTML = sugerencias.formateaLista();
   zonaSugerencias.style.display = 'block';  
 }
 
 function borraLista() {
-  document.getElementById("sugerencias").innerHTML = "";
-  document.getElementById("sugerencias").style.display = "none";
+  $("sugerencias").innerHTML = "";
+  $("sugerencias").style.display = "none";
 }
 
 //Nótese que he tenido que añadir  autocomplete="off" al formulario (form) para que nos despliegue el propio autocompletado 

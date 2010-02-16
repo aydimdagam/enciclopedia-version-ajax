@@ -4,12 +4,15 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Enciclopedia de criaturas</title>
 <link rel="stylesheet" href="auxiliar/enciclopedia.css" type="text/css">
+<script type="text/javascript" src="auxiliar/sessvars.js"></script>
+<script type="text/javascript" src="auxiliar/prototype.js"></script>
 <script type="text/javascript" src="auxiliar/swfobject.js"></script>
-<script type="text/javascript" src="auxiliar/ajax.js"></script>
 <script type="text/javascript" src="auxiliar/autocompletar.js"></script>
+<script type="text/javascript" src="auxiliar/ajax.js"></script>
 </head>
 
 <body>
+
 <div id="contenedor">
     <div id="izda">
     	<h1>Enciclopedia de Criaturas.</h1>
@@ -33,13 +36,32 @@
 		<div id="bso">Este será el texto sustituido</div>            
 	</div>
     
-    <div id="dcha">
-  		<div id="imagen"></div>
-        <div id="nombre"></div>
-        <div id="restriccion"></div>
-        <div id="intro"></div>
-        <div id="descripcion"></div>
-        <div id="notas"></div>
+    <div id="dcha">   
+		<div id="tabs">
+			<ul>
+				<li>Criatura</li>
+				<li>Rolemaster</li>
+				<li>Galerías</li>
+				<li>Admin</li>
+			</ul>
+		</div>
+ 
+		<div id="cabecera">
+			<div id="izquierda">
+			    <div id="nombre"></div>
+			   	<div id="restriccion"></div>
+		    	<div id="intro"></div>
+			</div>
+			<div id="derecha">
+				<div id="imagen"></div>
+			</div>			
+		</div>
+		
+		<div id="contenido">
+			<div id="descripcion"></div>
+			<div id="notas"></div>
+		</div>
+		
     </div>
     
 
@@ -52,8 +74,9 @@
     	</ul>
     	<div><a rel="license" href="http://creativecommons.org/licenses/by-nc/3.0/es/" target="_blank">
     	<span xmlns:dc="http://purl.org/dc/elements/1.1/" href="http://purl.org/dc/dcmitype/Text" property="dc:title" rel="dc:type">
-    	Enciclopedia de Criaturas versión AJAX</span> se nutre de la licencia 
-    	<a rel="license" href="http://creativecommons.org/licenses/by-nc/3.0/es/">Creative Commons Reconocimiento-No comercial - Copyleft 2010.</a></div>
+    	Enciclopedia de Criaturas versión AJAX</span> se nutre de la licencia Creative Commons Reconocimiento-No comercial - 
+    	Copyleft 2010.</a></div>
     </div>
+
 </body>
 </html>

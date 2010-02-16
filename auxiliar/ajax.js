@@ -1,225 +1,241 @@
 //
 //inicializamos el objeto XMLHttpRequest
-var peticion = null;
+var peticion=null;
 //
-function inicializa_xhr() {
-  if (window.XMLHttpRequest) {
-    return new XMLHttpRequest(); 
-  } else if (window.ActiveXObject) {
-    return new ActiveXObject("Microsoft.XMLHTTP"); 
-  } 
-}
-
+//las FAMILIAS se CARGAN en el evento onload
 //
-//Mostramos los Tipos de Criaturas
-function muestraFamilias() {
-  if (peticion.readyState == 4) {
-    if (peticion.status == 200) {
-      var lista = document.getElementById("familia");
-	  //var familias = eval('(' + peticion.responseText + ')');
-		var oJSON=peticion.responseText;
-		var familias=JSON.parse(oJSON);
-	  
-      lista.options[0] = new Option("- Tipo de criaturas -");
-      var i=1;
-      for(var codigo in familias) {
-        lista.options[i] = new Option(familias[codigo], codigo);
-        i++;
-      }
-    }
-  }
-}
-
-//cargamos las Criaturas
-function cargaCriaturas() {
-  var lista = document.getElementById("familia");
-  var familia = lista.options[lista.selectedIndex].value;
-  if(!isNaN(familia)) 
+//MOSTRAMOS las FAMILIAS de Criaturas
+function muestraFamilias(peticion)
+{
+  if (peticion.readyState==4)
   {
-    peticion = inicializa_xhr();
-    if (peticion) 
-	{
-      peticion.onreadystatechange = muestraCriaturas;
-      peticion.open("POST", "auxiliar/cargaCriaturas.php?nocache=" + Math.random(), true);
-      peticion.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-      peticion.send("familia=" + familia);
-    }
-  }
-}
-
-//Mostramos las Criaturas
-function muestraCriaturas() {
-  if (peticion.readyState == 4) {
-    if (peticion.status == 200) {
-      var lista = document.getElementById("criatura");
-	  //var criaturas = eval('(' + peticion.responseText + ')');
-		var oJSON=peticion.responseText;
-		var criaturas =JSON.parse(oJSON);
-		
-	  lista.options.length = 0;
-      lista.options[0] = new Option("- Criatura -");
-      var i=1;
-      for(var codigo in criaturas) {
-        lista.options[i] = new Option(criaturas[codigo], codigo);
-        i++;
-      }
-    }
-  }
-}
-
-
-//
-//cargamos los datos de la Criatura elegida desde la lista
-function cargaDatosCriatura() {
-	var lista = document.getElementById("criatura");
-	var nombreCriatura = lista.options[lista.selectedIndex].text;
-	//
-	peticion = inicializa_xhr();
-	if (peticion) 
-	{
-	  peticion.onreadystatechange = muestraDatosCriatura;
-	  peticion.open("POST", "auxiliar/cargaDatosCriatura.php?nocache=" + Math.random(), true);
-	  peticion.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-	  peticion.send("nombreCriatura=" + nombreCriatura);
-	}
-}
-
-//cargamos los datos de la Criatura elegida desde BUSCAR
-function cargaDatosCriaturaBuscar() {
-	var nombreCriatura = document.getElementById("buscar").value;
-	//
-	peticion = inicializa_xhr();
-	if (peticion) 
-	{
-	  peticion.onreadystatechange = muestraDatosCriatura;
-	  peticion.open("POST", "auxiliar/cargaDatosCriatura.php?nocache=" + Math.random(), true);
-	  peticion.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-	  peticion.send("nombreCriatura=" + nombreCriatura);
-	}
-}
-
-//
-function getElementsByClassName(oElm, strTagName, strClassName){
-	var arrElements = (strTagName == "*" && oElm.all)? oElm.all : oElm.getElementsByTagName(strTagName);
-	var arrReturnElements = new Array();
-	strClassName = strClassName.replace(/\-/g, "\\-");
-	var oRegExp = new RegExp("(^|\\s)" + strClassName + "(\\s|$)");
-	var oElement;
-	for(var i=0; i<arrElements.length; i++){
-		oElement = arrElements[i];
-		if(oRegExp.test(oElement.className)){
-			arrReturnElements.push(oElement);
+    if (peticion.status==200)
+    {
+		var oJSON=peticion.responseText;		//recuperamos el objeto JSON
+		var familias=JSON.parse(oJSON);
+		//
+		var desgloseFamilias=$H(familias);		//usaremos Prototype para tener bien desglosados los datos selecionados (por clave-valor)
+		var claves=desgloseFamilias.keys();
+		var valores=desgloseFamilias.values();
+		//
+		$("familia").options[0] = new Option("- Tipo de criaturas -");
+		for(var i=0;i<desgloseFamilias.size();i++)
+		{
+			$("familia").options[i+1] = new Option(valores[i], claves[i]);
 		}
-	}
-	return (arrReturnElements)
+    }
+  }
+}
+
+//CARGAMOS las CRIATURAS
+function cargaCriaturas(){
+		new Ajax.Request("auxiliar/cargaCriaturas.php?nocache=" + Math.random(), {		//usamos nomenclatura Prototype
+		method: 'POST',
+		requestHeaders:{Accept: 'application/json'},
+		parameters: 'familia='+$F("familia"),
+		onSuccess: muestraCriaturas
+		});
+}
+
+//MOSTRAMOS las CRIATURAS
+function muestraCriaturas(peticion)
+{
+  if (peticion.readyState == 4)
+  {
+	    if (peticion.status == 200)
+	    {
+			var oJSON=peticion.responseText;		//recuperamos el objeto JSON
+			var criaturas=JSON.parse(oJSON);
+			//
+			var desgloseCriatura=$H(criaturas);		//usamos Prototype para tener bien desglosados los datos selecionados (por clave-valor)
+			var claves=desgloseCriatura.keys();
+			var valores=desgloseCriatura.values();
+			//	
+			$("criatura").options.length=0;			//reiniciamos la lista para adecuarla al nuevo nœmero de elementos
+			$("criatura").options[0] = new Option("- Criatura -");
+			for(var i=0;i<desgloseCriatura.size();i++)
+			{
+				$("criatura").options[i+1] = new Option(valores[i], claves[i]);
+			}
+	    }
+  	}
+}
+
+//
+//CARGAMOS los DATOS de la Criatura elegida desde la lista
+function cargaDatosCriatura(){
+	var lista = $("criatura");
+	var nombreCriatura = lista.options[lista.selectedIndex].text;
+	new Ajax.Request("auxiliar/cargaDatosCriatura.php?nocache=" + Math.random(), {
+	method: 'POST',
+	requestHeaders:{Accept: 'application/json'},
+	parameters: 'nombreCriatura='+nombreCriatura,
+	onSuccess: muestraDatosCriatura
+	});
+	//
+	sessvars.criatura = nombreCriatura;	//guardamos el nombre de la criatura en una variable de SESIîN (ver 'sessvars.js')
+}
+
+//CARGAMOS los DATOS de la Criatura elegida desde BUSCAR
+function cargaDatosCriaturaBuscar(){
+	new Ajax.Request("auxiliar/cargaDatosCriatura.php?nocache=" + Math.random(), {
+	method: 'POST',
+	requestHeaders:{'Content-Type' : 'application/x-www-form-urlencoded'},
+	parameters: 'nombreCriatura='+criaturaSeleccionada,
+	onSuccess: muestraDatosCriatura
+	});
+	//
+	sessvars.criatura = criaturaSeleccionada;	//guardamos el nombre de la criatura en una variable de SESIîN (gracias a sessvars.js)
+}
+
+//CARGAMOS los DATOS de la Criatura elegida desde la variable de SESIîN
+function cargarCriaturaDesdeSesion(){
+	new Ajax.Request("auxiliar/cargaDatosCriatura.php?nocache=" + Math.random(), {
+		method: 'POST',
+		requestHeaders:{'Content-Type' : 'application/x-www-form-urlencoded'},
+		parameters: 'nombreCriatura='+sessvars.criatura,
+		onSuccess: muestraDatosCriatura
+		});
 }
 
 //
 //
-//SUSTITUCIÓN DE CARACTERES EXTRAÑOS
-//para poder reutilizar el nombre de la criatura sacado del campo análogo de la base de datos para que coincida con el nombre 
-//de la imagen hay que cambiar los caracteres extraños (espacios, ñ, acentos, etc), ya que las imágenes en Internet 
-//no pueden tener caracteres extraños
-//
-//primero creamos el array de pares valor a sustituir por valor de sustitución ('á' : 'a') pero codificados en utf-8 
-//(es decir, que hay que poner su valor Unicode): á-Á-ä-Ä-î
+//SUSTITUCIîN DE CARACTERES EXTRA„OS (para la URL de las im‡genes de cada criatura)
+//el array de pares-valor a sustituir en una cadena (con su valor UNICODE) 
 var CharsTranslation = {'\u00e1' : 'a','\u00e9' : 'e','\u00ed' : 'i', '\u00f3' : 'o', '\u00fa' : 'u', 
 						'\u00c1' : 'A', '\u00c9' : 'E', '\u00cd' : 'I', '\u00d3' : 'O', '\u00da' : 'U', 
 						'\u00E4' : 'a', '\u00EB' : 'e', '\u00EF' : 'i', '\u00F6' : 'o', '\u00FC' : 'u',
 						'\u00C4' : 'A', '\u00CB' : 'E', '\u00CF' : 'I', '\u00D6' : 'O', '\u00CC' : 'U',
 						'\u00EE' : 'i', '\u00FB' : 'u', '\u00CE' : 'I', '\u00DB' : 'U', '\u00f1' : 'n', '\u00d1' : 'N', ' ': '-'};
+//var caracteresChungos=$H(CharsTranslation); var claves=caracteresChungos.keys();var valores=caracteresChungos.values();alert(claves.inspect());
 //
-//función para sustituir caracter extraños en una cadena
-function strtr(str, list)
+//y la funci—n para sustituir caracter extra–os en una cadena
+function sustituirCaracteresChungos(cadena, listaValores)
 {
-  for(var c in list) {
-    str = String(str).replace(new RegExp(c, "g"), list[c]);
+  for(var indice in listaValores) {
+	  cadena=String(cadena).replace(new RegExp(indice, "g"), listaValores[indice]);
   }
- //
-  return str;
+  //
+  return cadena;
 }
 
 //
-//función para aplicar colores (estilos CSS) a cada criatura
-//se le pasa la gama de colroes de cada familia de criaturas (extraido de la BD)
+//APLICAMOS gama de COLORES a cada CRIATURA (mediante estilos CSS) 
+//se le pasa la gama de colroes de cada familia de criaturas (extra’do de la BD)
 function aplicarColoresCriatura(color0, color1, color2)
 {
-	document.body.style.background=color1;							//fondo: color base
-	document.getElementById("dcha").style.background=color2;		//izquierda: color claro
-	document.getElementById("dcha").style.color=color1;				//derecha: color base	
-	document.getElementById("imagen").style.background=color0;		//imagen: color oscuro
-	document.getElementById("imagen").style.opacity=0.7;			//imagen: opacidad
-	document.getElementById("nombre").style.color=color1;			//el nombre: color base	
-	document.getElementById("izda").style.color=color2;				//izquierda: color claro
-	document.getElementById("aleatoria").style.color=color2;		//aleatoria: color claro
-	document.getElementById("intro").style.color=color0;			//intro: color oscuro
+	//backgrounds
+	document.body.style.background=color1;	//FONDO
+	$("dcha").style.background=color1;		//DIV dcha
+	$("imagen").style.background=color0;	//imagen
+		$("imagen").style.opacity=0.7;		//imagen: opacidad
+	$("cabecera").style.background=color2;	//DIV contenido
+	$("contenido").style.background=color2;	//DIV contenido
+	//letras
+	$("contenido").style.color=color1;		//
+	$("restriccion").style.color=color1;		//
+	$("nombre").style.color=color1;			//el nombre: color base	
+	$("izda").style.color=color2;			//izquierda: color claro
+	$("aleatoria").style.color=color2;		//aleatoria: color claro
+	$("intro").style.color=color0;			//intro: color oscuro
 	//
-	var enlaces=document.getElementsByTagName("a");
-	for(var i=0;i<enlaces.length;i++)
+	var enlaces=$$("a");
+	enlaces.each(function(enlaces)
 	{
-		enlaces[i].style.textDecoration="none";
-		enlaces[i].style.color=color2;
-		//enlaces[i].style.color=color0;		//pendiente del rollover
-	}
+		enlaces.style.textDecoration="none";
+		enlaces.style.color=color2;
+	});
 	//
-	var etiquetas=document.getElementsByTagName("label");
-	for(var i=0;i<etiquetas.length;i++)
+	var etiquetas=$$("label");
+	etiquetas.each(function(etiquetas)
 	{
-		etiquetas[i].style.color=color2;
-	}
+		etiquetas.style.color=color2;
+	});
 	//
-	var listas=document.getElementsByTagName("select");
-	for(var i=0;i<listas.length;i++)
+	var listas=$$("select");
+	listas.each(function(listas)
+	{		
+		listas.style.borderColor=color2;
+	});
+	//
+	$$("input")[0].style.borderColor=color2;	//
+	$$("h1")[0].style.color=color2;				//color para el t’tulo principal de la p‡gina: Enciclopedia de Criaturas
+	//
+	var tabs=$$('#tabs ul li');
+	tabs.each(function(tabs)
 	{
-		
-		listas[i].style.borderColor=color2;
-	}
-	//
-	document.getElementsByTagName("input")[0].style.borderColor=color2;
-	//color para el título principal de la página: Enciclopedia de Criaturas
-	document.getElementsByTagName("h1")[0].style.color=color2;
+		tabs.style.background=color2;	//pesta–as (LI)
+		tabs.style.color=color1;
+	});
 }
- 
-//mostramos los datos de la criatura elegida
-function muestraDatosCriatura()
-{	
-	if (peticion.readyState == 4) {
+
+//
+//Funci—n para convertir la primera letra de la cadena a mayœsculas
+function primeraMayuscula(string){
+	 return string.substr(0,1).toUpperCase()+string.substr(1,string.length).toLowerCase();
+}
+
+//MOSTRAMOS los DATOS de la criatura elegida
+function muestraDatosCriatura(peticion)
+{
+	if (peticion.readyState == 4)
+	{
 		if (peticion.status == 200) 
 		{
+			//
 			var oJSON=peticion.responseText;			
 			var datosCriatura=JSON.parse(oJSON);
 			//
-			var i=1;
-			for(var nombre in datosCriatura)	//notación JSON: pares {"parametro": "valor"}
+			var desgloseDatosCriatura=$H(datosCriatura);	//usaremos Prototype para tener bien desglados los datos seleccionados (por clave-valor)
+			var claves=desgloseDatosCriatura.keys();
+			var valores=desgloseDatosCriatura.values();
+			//
+			for(var i=0;i<desgloseDatosCriatura.size();i++)
 			{
-				//alert(nombre+":  "+datosCriatura[nombre]);
-				//
-				switch(nombre)
+				switch(claves[i])
 				{
 					case "nombre":						
-						var imagen=strtr(datosCriatura[nombre], CharsTranslation);						
-						document.getElementById("imagen").innerHTML="<a href=\"imagenes/"+imagen.toLowerCase()+".jpg\" target=\"_blank\"><img width=\"300\" height=\"300\" border=\"0\" src=\"imagenes/"+imagen.toLowerCase()+".jpg\" /></a>";
-						document.getElementById(nombre).innerHTML=datosCriatura[nombre];
+						var imagen=sustituirCaracteresChungos(valores[i], CharsTranslation);						
+						$("imagen").innerHTML="<a href=\"imagenes/" + imagen.toLowerCase() + 
+						".jpg\" target=\"_blank\"><img width=\"300\" height=\"300\" border=\"0\" src=\"imagenes/" + imagen.toLowerCase() + ".jpg\" /></a>";
+						//
+						$(claves[i]).innerHTML="";
+						var letrasNombre=valores[i].toArray();
+						for(var j=0;j<letrasNombre.size();j++)
+						{
+							var numAleatorio=Math.floor(Math.random()*5+1);
+							$(claves[i]).innerHTML +="<span id='letra"+numAleatorio+"'>"+letrasNombre[j]+"</span>";
+						}
 						break
 					case "intro":
-					case "descripcion":					
-					case "notas":					
-						document.getElementById(nombre).innerHTML=datosCriatura[nombre];						
+						$(claves[i]).innerHTML=valores[i];						
+						break;
+					case "descripcion":						
+						/*var subtitulo=document.createElement("h2");
+						$(claves[i]).appendChild(subtitulo);
+						//
+						var letrasSubtitulo=claves[i].toArray();
+						for(var j=0;j<letrasSubtitulo.size();j++)
+						{
+							$$("#descripcion h2").innerHTML +=letrasSubtitulo[j];
+						}						
+						var parrafo=document.createElement("p");
+						$(claves[i]).appendChild(parrafo);
+						$$("#descripcion p").innerHTML=valores[i];*/
+					case "notas":
+						var subtitulo=primeraMayuscula(claves[i]);
+						$(claves[i]).innerHTML="<h2>"+subtitulo+":</h2>"+valores[i];
 						break;					
 					case "color0":
 					case "color1":
 						break;						
 					case "color2":
 						//aplicamos los colores (mediante estilos CSS)
-						aplicarColoresCriatura("#"+datosCriatura.color0, datosCriatura.color1, "#"+datosCriatura.color2);
-						//
-						var flashvars = {color: "0x"+datosCriatura.color2};
-						var params = {menu: "false", wmode: "transparent" };
-						swfobject.embedSWF("auxiliar/bso.swf", "bso", "360", "330", "9.0.0","", flashvars, params);
+						aplicarColoresCriatura("#"+valores[i-2], valores[i-1], "#"+valores[i]);
 						break;
 					case "restriccion":
-						var valorRestriccion=parseInt(datosCriatura[nombre]);
-						var lista="<ul>\n";
+						var valorRestriccion=parseInt(valores[i]);
+						var lista="<ul>\n<li id='claveRestriccion'>"+primeraMayuscula(claves[i])+":</li>";
 						for(var j=0; j<10; j++) 
 						{
 							if(j < valorRestriccion) 
@@ -232,86 +248,145 @@ function muestraDatosCriatura()
 						}
 						lista +="</ul>\n";
 						//
-						document.getElementById(nombre).innerHTML=lista;
-						//
-						var claseLleno=getElementsByClassName(document.getElementById(nombre), "li", "lleno");
-						var claseVacio=getElementsByClassName(document.getElementById(nombre), "li", "vacio");
-						for(var k=0; k<claseLleno.length; k++) 
+						$(claves[i]).innerHTML=lista;
+						//						
+						var claseLleno=$$("#restriccion ul li.lleno");
+						var claseVacio=$$("#restriccion ul li.vacio");
+						for(var k=0; k<claseLleno.size(); k++) 
 						{
 							claseLleno[k].style.background=datosCriatura.color1;
 						}
-						for(var c=0; c<claseVacio.length; c++) 
+						for(var c=0; c<claseVacio.size(); c++) 
 						{
 							claseVacio[c].style.background=datosCriatura.color1;
 							claseVacio[c].style.opacity=0.3;
 						}
-						break;						
+						break;
 					default:
 						//
-						break;						
+						break;	
 				}
-				//
-				i++;			
-			}	
+			}			
 		}
-	}
+	} 
 }
 //
 //
-//cargamos los datos de la Criatura aleatoria elegida desde el enlace
+//CARGAMOS los DATOS de la Criatura ALEATORIA elegida desde el enlace
 function cargarCriaturaAleatoria() {
-	//consulta el numero de campos de la BD
-	//generamos un valor aleatorio de 0 al valor de campos y se lo paamos y que busquye por id
+	//consulta el numero de campos de la BD: generamos un valor aleatorio entre 0 y el nœmero de campos y se lo pasamos para que busque por 'id'
 	var numAleatorio=Math.floor(Math.random()*150);
 	//
-	peticion = inicializa_xhr();
-	if (peticion) 
-	{
-	  peticion.onreadystatechange = muestraDatosCriatura;
-	  peticion.open("POST", "auxiliar/cargaDatosCriatura.php?nocache=" + Math.random(), true);
-	  peticion.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-	  peticion.send("numAleatorio=" + numAleatorio);
-	}
+	new Ajax.Request("auxiliar/cargaDatosCriatura.php?nocache=" + Math.random(), {		//usamos nomenclatura Prototype
+		method: 'POST',
+		requestHeaders:{'Content-Type' : 'application/x-www-form-urlencoded'},
+		parameters: 'numAleatorio=' + numAleatorio,
+		onSuccess: muestraDatosCriatura
+		});
 }
 
-//Nos aseguramos que se ha caregado el DOM para gestionar los eventos y cargar los datos
-window.onload = function() 
+//
+//Funcionalidad de las PESTA„AS (nuestro MENò principal). El evento onclick de cada PESTA„A llama a esta funci—n
+//que mostrar‡ en cu‡l estamos y el contenido respectivo de la pesta–a (diferente para cada criatura)
+function tabsClasses()
 {
-	//Cargamos las Familias de criaturas en la Lista
-	peticion = inicializa_xhr();	//esta primera petición AJAX no depende del usuario
-	//
-	if(peticion)
-	{
-		peticion.onreadystatechange = muestraFamilias;
-		peticion.open("GET", "auxiliar/cargaFamilias.php?nocache="+Math.random(), true);
-		peticion.send(null);
+	var listaMenu=$$("#tabs ul li");
+	for (var i=0;i<listaMenu.size();i++)
+	{		
+		listaMenu[i].style.cursor="pointer";	//emulamos que sean pinchables
+		listaMenu[i].style.cursor="hand";		//les asignamos cursor, ya que no son enlaces normales y por defecto no lo tienen
+		if (listaMenu[i].innerHTML == this.innerHTML)	listaMenu[i].writeAttribute("class", "menuSeleccionado");
+		else listaMenu[i].writeAttribute("class", "menuSinSeleccionar");
 	}
-	//Y preparamos los manejadores de eventos para la selección de familias y criaturas
-	document.getElementById("familia").onchange = cargaCriaturas;
-	document.getElementById("criatura").onchange = cargaDatosCriatura;
+	//
+	//switcheamos el contenido de 'this.innerHTML' (el texto de cada item de la lista: del menœ realmente) previo filtro de caracteres extra–os
+	switch(sustituirCaracteresChungos(this.innerHTML, CharsTranslation))
+	{
+		case "Criatura":
+			//carga los datos de la criatura de nuevo (desde la variable de SESIîN donde se guard— en nombre de la criatura)
+			deMomento(null, null, null, null, null, null);	//reseteamos los campos antes de llamar de nuevo a los datos de la criatura		
+			cargarCriaturaDesdeSesion();
+			break;
+		case "Rolemaster":
+			//carga los datos de la criatura para Rolemaster (datos de rol)
+			deMomento("Datos Rolemaster.", null, "<p class='primero'>Pendiente. Disculpen las molestias.</p>", 
+					null, null, null);		//reseteamos los campos de momento para hacer el efecto de cambio de secci—n
+			break;			
+		case "Galerias":
+			//carga la galer’a de la criatura
+			deMomento("Galer&iacute;as.", null, "<p class='primero'>Pendiente. Disculpen las molestias.</p>", 
+					null, null, null);		//reseteamos los campos de momento para hacer el efecto de cambio de secci—n		
+			break;			
+		case "Admin":
+			//carga el formulario de autenticaci—n o  Funcionalidades del Admin si ya est‡s logeado
+			deMomento("Formulario de Autenticaci&oacute;n.", null, "<p class='primero'>Pendiente. Disculpen las molestias.</p>", 
+					null, null, null);		//reseteamos los campos de momento para hacer el efecto de cambio de secci—n
+			break;	
+		default:
+			break;				
+	}
+}
+		//
+		function deMomento(nombre, restriccion, intro, imagen, descripcion, notas)
+		{
+			$("nombre").innerHTML=nombre;
+			$("restriccion").innerHTML=restriccion;
+			$("intro").innerHTML=intro;
+			$("imagen").innerHTML=imagen;
+			$("descripcion").innerHTML=descripcion;
+			$("notas").innerHTML=notas;
+		}
+
+//
+//Nos aseguramos que se ha caregado el DOM para gestionar los eventos y cargar los datos
+function alCargar() 
+{
+	//Cargamos la LISTA principal: Familias de criaturas en la Lista
+	new Ajax.Request("auxiliar/cargaFamilias.php?nocache=" + Math.random(), {	//usamos nomenclatura Prototype
+		method: 'GET',
+		onSuccess: muestraFamilias}
+	);
+	//
+	//Y preparamos los MANEJADORES DE EVENTOS para la selecci—n de familias y criaturas (usando la nomenclatura de Prototype)	
+	Event.observe("familia", "click", cargaCriaturas);			//nomenclatura javascript: $("familia").onchange = cargaCriaturas;
+	Event.observe("criatura", "change", cargaDatosCriatura);	//nomenclatura javascript: $("criatura").onchange = cargaDatosCriatura;
 	//
 	//
-	//borramos el input de buscar
-	document.getElementById("buscar").value="";
-	//preparamos el AUTOCOMPLETADO de Buscar criatura
-	// Crear elemento de tipo <div> para mostrar las sugerencias del servidor
-	var elDiv = document.createElement("div");
-	elDiv.id = "sugerencias";
-	//para que inserte las sugerencias antes que otros divs
-	document.getElementById("diosguarro").appendChild(elDiv);
-	//Y preparamos los manejadores de eventos para las sugerencias en la búsqueda de criaturas
-	document.getElementById("buscar").onkeyup = autocompleta;
+	//ELEMENTO BUSCAR (FORM)
+	//preparamos el AUTOCOMPLETADO de Buscar criatura	
+	var elDiv=document.createElement("div");	//Crear elemento de tipo <div> para mostrar las sugerencias del servidor
+	elDiv.id="sugerencias";
+	$("diosguarro").appendChild(elDiv); //para que inserte las sugerencias en ese lugar exactamente
+	//
+	//Y preparamos el MANEJADOR DE EVENTOS para las sugerencias en la bœsqueda de criaturas con nomenclatura Prototype
+	Event.observe("buscar", "keyup", autocompleta);	//nomenclatura javascript: $("buscar").onkeyup = autocompleta;	
 	//
 	//
-	var enlaceCriaturaAleatoria=document.getElementById("aleatoria");
-	enlaceCriaturaAleatoria.style.cursor="pointer";
-	enlaceCriaturaAleatoria.style.cursor="hand";
-	enlaceCriaturaAleatoria.onclick=cargarCriaturaAleatoria;
+	//asignamos un MANEJADOR DE EVENTOS al elemento ALEATORIA para que al pinchar muestre una Criatura aleatoriamente
+	$("aleatoria").style.cursor="pointer";
+	$("aleatoria").style.cursor="hand";
+	//Y preparamos el MANEJADOR DE EVENTOS para 'criatura aleatoria' con nomenclatura Prototype
+	Event.observe("aleatoria", "click", cargarCriaturaAleatoria);	//nomenclatura javascript: $("aleatoria").onclick=cargarCriaturaAleatoria;	
 	//
 	//
-	var flashvars = {color: "0xFEBF91"};
+	//Cargamos el Objeto FLASH con unos par‡metros iniciales
+	var flashvars = {color: "0xffffff"};
 	var params = {menu: "false", wmode: "transparent"};
 	swfobject.embedSWF("auxiliar/bso.swf", "bso", "360", "330", "9.0.0","", flashvars, params);
 	//
-	//document.getElementById('dcha').style.minHeight="580px";
+	//
+	//Muestra en quŽ PESTA„A te encuentras (en realidad estas pesta–as son el MENò principal) y le asigna un evento
+	var enlacesMenu=$$("#tabs ul li");			//seleccionamos las pesta–as mediante funci—n Prototype
+	enlacesMenu.each(function(enlacesMenu)
+	{
+		enlacesMenu.style.cursor="pointer";	//emulamos que sean pinchables
+		enlacesMenu.style.cursor="hand";		//les asignamos cursor, ya que no son enlaces normales y por defecto no lo tienen
+		Event.observe(enlacesMenu, "click", tabsClasses);	//y asignamos el MANEJADOR DE EVENTOS para hacerlas pinchables (con nomenclatura Prototype)
+		//por defecto, mostraremos el contenido de la primera: 'Criatura'
+		if (enlacesMenu.innerHTML == "Criatura")	enlacesMenu.writeAttribute("class", "menuSeleccionado");
+		else enlacesMenu.writeAttribute("class", "menuSinSeleccionar");
+	});
 }
+
+//Preparamos el MANEJADOR DE EVENTOS principal: onLoad (usando la nomenclatura de Prototype)	
+Event.observe(window, "load", alCargar);	//n—tese que el elemento afectado es el objeto WINDOW
